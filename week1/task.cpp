@@ -60,19 +60,26 @@ void delete_cloud(const PointCloud& pc)
 	delete[] pc.begin;
 }
 
+bool operator<(const Point_3D& left, const Point_3D& right)
+{
+	if (left.x < right.x or (left.x == right.x and (left.y < right.y or (left.y == right.y and left.z < right.z))))
+		return true;
+	return false;
+}
+
 PointCloud merge_clouds(const PointCloud& A, const PointCloud& B)
 {
-	set<Point_3D*> points;
+	set<Point_3D> points;
 	for (int i = 0; i < A.size; i++)
-		points.insert(A.begin + i);
+		points.insert(*(A.begin + i));
 	for (int i = 0; i < B.size; i++)
-		points.insert(B.begin + i);
+			points.insert(*(B.begin + i));
 
 	auto C = create_cloud(points.size());
 
 	int counter = 0;
 	for (const auto point : points)
-		*(C.begin + counter++) = *point;
+		*(C.begin + counter++) = point;
 
 	return C;
 }
